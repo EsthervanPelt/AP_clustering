@@ -31,5 +31,19 @@ def correlation(u: list, v: list, dist = 1):
     if dist == 1: return d_corr
     elif dist == 0: return corr
     
-
+def mean_cluster_weight(x: int, data: dict, cluster: tuple, dist: 0): #0 = euclidean, 1 = squared euclidean
+    cluster_points = cluster[1]
     
+    sum_dist = 0
+    for y in cluster_points:
+        y_values = data[y][2]
+        x_values = data[x][2]
+        
+        if dist == 0: 
+            sum_dist += euclidean(x_values, y_values, squared = 0)
+        elif dist == 1:
+            sum_dist += euclidean(x_values, y_values, squared = 1)
+    
+    MC = sum_dist / len(len(cluster_points))
+    
+    return MC
