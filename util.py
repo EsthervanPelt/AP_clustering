@@ -11,7 +11,7 @@ def euclidean(u: list, v: list, squared = 1):
     if len(u) != len(v): print('Error: vectors not of the same length')
     
     elif len(u) == len(v):
-        squared_euc = sum(map(lambda x, y: (x*y)**2, u, v))
+        squared_euc = sum(map(lambda x, y: (x-y)**2, u, v))
         euc = squared_euc**(1/2)
         
         if squared == 0: return euc
@@ -53,7 +53,7 @@ def mean_cluster_weight(x: int, data: dict, cluster: tuple, dist: 0): #0 = eucli
         elif dist == 1:
             sum_dist += euclidean(x_values, y_values, squared = 1)
     
-    MC = sum_dist / len(len(cluster_points))
+    MC = sum_dist / len(cluster_points)
     
     return MC
 
@@ -62,17 +62,18 @@ def neighbouring_cluster(x: int, data: dict, clusters: dict, dist = 0): #0 = euc
     for cluster in clusters.keys():
         if cluster != data[x][3]:
             MC = mean_cluster_weight(x, data, clusters[cluster], dist)
-        
-            if (NC == None) or (NC > MC):
-                NC = MC
             
+            if type(MC) != None:
+                if (NC == None) or (NC > MC): NC = MC
+    
     return NC
 
 def silhouette_score(x: int, data: dict, clusters: dict, dist: 0): #0 = euclidean, 1 = squared euclidean
     cluster_x = data[x][3]
+            
     W = mean_cluster_weight(x, data, clusters[cluster_x], dist)
-    NC = neighbouring_cluster(x, data, clusters, dist)
-    
+    NC = neighbouring_cluster(x, data, clusters, dist) 
+
     if W < NC: s = 1-W/NC
     elif W == NC: s = 0
     elif W > NC: s = NC/W-1
