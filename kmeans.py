@@ -5,6 +5,7 @@ Created on Mon Mar 22 12:15:42 2021
 @author: 20183816
 """
 import random as rd
+from util import *
 
 def initial_clustering(k: int, data: dict):
     clusters = {}
@@ -31,3 +32,23 @@ def compute_centroid(data: dict, clusters: dict):
         clusters[key][0] = centroid
     
     return clusters
+
+def assign_datapoints(data: dict, clusters: dict, dist = 0): # 0 is euclidean, 1 is squared
+    for key in clusters:
+        clusters[key][1] = []
+    
+    for datakey in data:
+        centroids = []
+        
+        for clusterkey in clusters:
+            if (dist == 0) or (dist == 1): distance = euclidean(data[datakey][2], clusters[clusterkey][0], dist)
+            centroids.append((clusterkey, distance))
+            
+        nearest = centroids.min(key = lambda x:x[1])
+        data[datakey][3] = nearest
+        
+        clusters[clusterkey][1].append(datakey)
+        
+    return data, clusters
+        
+        
