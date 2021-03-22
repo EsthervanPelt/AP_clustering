@@ -8,23 +8,24 @@ import pandas as pd
 
 def read_data(metadata: str, expression: str):
     meta = pd.read_csv(metadata)
-    values = pd.read_csv(expression)
+    genes = pd.read_csv(expression)
     
     data = {}
     
     for index in meta.index:
-        genes = values.loc[values['Unnamed: 0'] == meta['name'][index]].values[0,1:].tolist()
         data[meta['COSMIC_ID'][index]] = (meta['name'][index],          # name of cel line
                                           meta['TCGA_label'][index],    # type of cancer
-                                          values.loc[values['Unnamed: 0'] == meta['name'][index]].values[0,1:].tolist(), # gene expression values 
+                                          genes.loc[values['Unnamed: 0'] == meta['name'][index]].values[0,1:].tolist(), # gene expression values 
                                           None)                         # centroid location
-    return data
-
+    
+    gene_names = genes.columns.values[1:].tolist()
+    return data, gene_names
+ 
 fileMetadata = "GDSC_metadata.csv"
 fileRMAExpression = "GDSC_RNA_expression.csv"
 
 meta = pd.read_csv(fileMetadata)
 values = pd.read_csv(fileRMAExpression)
 
-data = read_data(fileMetadata, fileRMAExpression)
+data, gene_names = read_data(fileMetadata, fileRMAExpression)
 
