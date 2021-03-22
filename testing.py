@@ -42,3 +42,21 @@ v = np.random.rand(1000000,1)
 d = dot(u,v)
 
 sqrt(14234523454)
+
+
+###### Test kmeans
+from util import *
+from kmeans import *
+x = [0,1,2,5,5,5,8,9]
+y = [5,3,5,1,8,11,1,0]
+data = {}
+for i in range(len(x)):
+    data[i] = [None, None, [x[i],y[i]], None]
+clusters = {}
+clusters[1] = [[5,8],[]]
+clusters[2] = [[5,11],[]]
+clusters[3] = [[8,1],[]]
+
+data, clusters = assign_datapoints(data, clusters, dist = 0) #1st iteration
+clusters = compute_centroid(data, clusters)
+data, clusters = assign_datapoints(data, clusters, dist = 0) #2nd iteration
