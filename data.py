@@ -16,7 +16,7 @@ def read_data(metadata: str, expression: str):
         data[meta['COSMIC_ID'][index]] = (meta['name'][index],          # name of cel line
                                           meta['TCGA_label'][index],    # type of cancer
                                           genes.loc[values['Unnamed: 0'] == meta['name'][index]].values[0,1:].tolist(), # gene expression values 
-                                          None)                         # centroid location
+                                          None)                         # cluster ID
     
     gene_names = genes.columns.values[1:].tolist()
     return data, gene_names
