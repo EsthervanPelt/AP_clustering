@@ -13,19 +13,19 @@ def read_data(metadata: str, expression: str):
     data = {}
     
     for index in meta.index:
-        data[meta['COSMIC_ID'][index]] = (meta['name'][index],          # name of cel line
+        data[meta['COSMIC_ID'][index]] = [meta['name'][index],          # name of cel line
                                           meta['TCGA_label'][index],    # type of cancer
-                                          genes.loc[values['Unnamed: 0'] == meta['name'][index]].values[0,1:].tolist(), # gene expression values 
-                                          None)                         # cluster ID
+                                          genes.loc[genes['Unnamed: 0'] == meta['name'][index]].values[0,1:].tolist(), # gene expression values 
+                                          None]                         # cluster ID
     
     gene_names = genes.columns.values[1:].tolist()
     return data, gene_names
  
-fileMetadata = "GDSC_metadata.csv"
-fileRMAExpression = "GDSC_RNA_expression.csv"
+# fileMetadata = "GDSC_metadata.csv"
+# fileRMAExpression = "GDSC_RNA_expression.csv"
 
-meta = pd.read_csv(fileMetadata)
-values = pd.read_csv(fileRMAExpression)
+# meta = pd.read_csv(fileMetadata)
+# values = pd.read_csv(fileRMAExpression)
 
-data, gene_names = read_data(fileMetadata, fileRMAExpression)
+# data, gene_names = read_data(fileMetadata, fileRMAExpression)
 

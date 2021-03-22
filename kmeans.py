@@ -11,11 +11,11 @@ def initial_clustering(k: int, data: dict):
     clusters = {}
     
     for cluster_ID in range(k):
-        clusters[cluster_ID] = (None, []) #0 = centroid location, 1 = list of data points
+        clusters[cluster_ID] = [None, []] #0 = centroid location, 1 = list of data points
     
     for key in data:
         cluster_ID = rd.randrange(k)
-        key[3] = cluster_ID
+        data[key][3] = cluster_ID
         clusters[cluster_ID][1].append(key)
         
     return data, clusters
@@ -24,7 +24,7 @@ def compute_centroid(data: dict, clusters: dict):
     for key in clusters:
         datapoints = clusters[key][1]
         
-        values = [0]*len(data(datapoints[0])[2])
+        values = [0]*len(data[datapoints[0]][2])
         for x in datapoints:
             values = [sum(x) for x in zip(values, data[x][2])]
         centroid = [x/len(values) for x in values]
@@ -42,12 +42,12 @@ def assign_datapoints(data: dict, clusters: dict, dist = 0): # 0 is euclidean, 1
         
         for clusterkey in clusters:
             if (dist == 0) or (dist == 1): distance = euclidean(data[datakey][2], clusters[clusterkey][0], dist)
-            centroids.append((clusterkey, distance))
-            
+            centroids.append([clusterkey, distance])
+
         nearest = sorted(centroids, key = lambda x:x[1])[0]
         data[datakey][3] = nearest[0]
         
-        clusters[clusterkey][1].append(datakey)
+        clusters[nearest[0]][1].append(datakey)
         
     return data, clusters
         
