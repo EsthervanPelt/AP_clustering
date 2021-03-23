@@ -28,7 +28,7 @@ dist = 0
 G = construct_graph(data, dist)
 
 # Karger's  algorithm
-cuts = []
-for i in range(10):
-    cuts = karger_min_cut(G, cuts)
+# cuts = []
+# for i in range(10):
+#     cuts = karger_min_cut(G, cuts)
 
