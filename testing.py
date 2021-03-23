@@ -8,6 +8,7 @@ import numpy as np
 import time
 import random
 import math
+import networkx as nx
 
 def dot(u: list, v: list):
     time0 = time.time()
@@ -60,3 +61,29 @@ clusters[3] = [[8,1],[]]
 data, clusters = assign_datapoints(data, clusters, dist = 0) #1st iteration
 clusters = compute_centroid(data, clusters)
 data, clusters = assign_datapoints(data, clusters, dist = 0) #2nd iteration
+
+###### Test working with graph of graphs
+G = nx.MultiGraph()
+
+for i in range(1,6):
+    H = nx.Graph()
+    H.add_nodes_from([i,i**2])
+
+    G.add_node(H)
+
+l = [0]+list(G.nodes)
+
+G.add_edges_from([(l[1],l[2]), (l[1],l[3]), (l[1],l[5]), (l[2],l[4]), (l[2],l[3]), (l[3],l[4]), (l[4],l[5])])
+list(G.nodes)[0].add_edge(1,0.1)
+list(G.nodes)[1].add_edge(2,4)
+
+for edge in G.edges(l[2]):
+    if l[1] !=edge[1]:
+        G.add_edge(l[1],edge[1])
+        
+print(list(G.nodes)[0].nodes, list(G.nodes)[0].edges)
+print(list(G.nodes)[1].nodes, list(G.nodes)[1].edges)
+l[1].add_nodes_from(l[2])
+l[1].add_edges_from(l[2].edges)
+print(list(G.nodes)[0].nodes, list(G.nodes)[0].edges)
+G.remove_node(l[2])
