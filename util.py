@@ -55,7 +55,7 @@ def half_correlation_matrix(data: dict, dist = 0):
         
         corr_matrix.append(row)
     
-    return corr_matrix
+    return corr_matrix, datapoints
 
 def mean_cluster_weight(x: int, data: dict, cluster: tuple, dist: 0): #0 = euclidean, 1 = squared euclidean
     cluster_points = cluster[1]
