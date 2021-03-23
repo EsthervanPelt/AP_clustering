@@ -8,6 +8,7 @@ Created on Mon Mar 22 16:06:52 2021
 from data import read_data
 from kmeans import clustering
 from graph import construct_graph
+from graph import karger_min_cut
 
 # assign datafiles
 fileMetadata = "GDSC_metadata.csv"
@@ -17,12 +18,17 @@ fileRMAExpression = "GDSC_RNA_expression.csv"
 data, gene_names = read_data(fileMetadata, fileRMAExpression);
 
 # k-means algorithm
-k = 4
-max_iterations = 20
-dist = 0 # euclidean
-data, clusters, S = clustering(data, k, max_iterations, dist)
+# k = 4
+# max_iterations = 20
+# dist = 0 # euclidean
+# data, clusters, S = clustering(data, k, max_iterations, dist)
 
 # construct graph with approximately 0.1*n(n-1)/2 edges
 dist = 0
 G = construct_graph(data, dist)
+
+# Karger's  algorithm
+cuts = []
+for i in range(10):
+    cuts = karger_min_cut(G, cuts)
 

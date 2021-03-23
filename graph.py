@@ -47,7 +47,7 @@ def find_edge_threshold(data: dict, dist = 0):
 def construct_graph(data: dict, dist = 0):
     cc, corr_matrix, datapoints = find_edge_threshold(data, dist)
     
-    G = nx.Graph()
+    G = nx.MultiGraph()
     for key in data:
         G.add_node(key, label = data[key][1], gene_values = data[key][2]) #0 = cancer label, 1 = gene values
     
@@ -56,30 +56,53 @@ def construct_graph(data: dict, dist = 0):
             if corr_matrix[row][column] >= cc: 
                 G.add_edge(datapoints[row], datapoints[column])
             
+    # for i in list(G.nodes): 
+    #     if len(G.adj[i]) == 0:
+    #         row = datapoints.index(i)
+    #         column = corr_matrix[row].index(max(corr_matrix[row]))
+    #         G.add_edge(datapoints[row], datapoints[column])
+            
     return G
  
-cuts = []
-def kargerMinCut(G):
-    while len(G) > 2:
-        v = random.choice(list(G.keys()))
-        w = random.choice(G[v])
-        contract(G, v, w)
-    mincut = len(G[list(G.keys())[0]])
-    cuts.append(mincut)
+def karger_min_cut(G, cuts):
+    i = 0
+    while G.number_of_nodes() > 2:
+        print(i)
+        i += 1
+        node = random.choice(list(G.nodes))
+        
+        # if len(G.adj[node]) == 0:
+        #     G.remove_node(node)
+        # else:            
+        neighbour = random.choice(list(G.adj[node]))
+        G = contract(G, node, neighbour)
+        
+    mincut = len(G.adj[list(G.nodes)[0]])
+    cuts.append((mincut, )
     
-def contract(graph, v, w):
-    for node in graph[w]:  # merge the nodes from w to v
-         if node != v:  # we dont want to add self-loops
-             graph[v].append(node)
-         graph[node].remove(w)  # delete the edges to the absorbed 
-         if node != v:
-              graph[node].append(v)
-    del graph[w]  # delete the absorbed vertex 'w'
+    return cuts, H1, H2
+    
+def contract(G, main_node, neighbour):
+    
+    for node in G.adj[neighbour]:  # merge the nodes from w to v
+        if node != main_node:  # we dont want to add self-loops
+            G.add_edge(main_node, node)
 
-# def adaptedHCS(G = nx.Graph()):
-#     if highly_connected(G):
-#         return G
-#     else:
-#         H1, H2, C = KargerCut(G)
-#         p1 = adaptedHCS(H1)
-#         p2 = adaptedHCS(H2)
+    G.remove_node(neighbour)
+    
+    # for i in list(G.nodes):
+    #     if len(G.adj[i]) == 0: print(main_node, neighbour, i, 'warning')
+    
+    return G
+
+def adaptedHCS(G):
+    if not(G.number_of_edges() > 0.5*G.number_of_nodes()) or (G.number_of_nodes() == 1):
+        C, (H1, H2) = nx.minimum_cut(G, )
+        
+        p1 = adaptedHCS(H1)
+        p2 = adaptedHCS(H2)
+        
+        G = nx.Graph()
+        G.add_edge(p1, p2)
+    
+    return G
