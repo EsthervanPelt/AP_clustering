@@ -51,7 +51,7 @@ def construct_graph(data: dict, dist = 0):
                 
     return G
  
-def karger_min_cut(G, cuts):
+def karger_min_cut(data: dict, G, cuts, dist = 0):
     i = 0
     while G.number_of_nodes() > 2:
         print(i)
@@ -64,10 +64,14 @@ def karger_min_cut(G, cuts):
     mincut = len(G.edges(list(G.nodes())[0]))
     
     cuts.append(mincut)
-     
-    H1
     
-    return cuts#, H1, H2
+    data1 = {key:value for key,value in data.items() if key in list(G.nodes().data('contains'))[0][1]}
+    data2 = {key:value for key,value in data.items() if key in list(G.nodes().data('contains'))[1][1]}
+    
+    H1 = construct_graph(data1, dist)
+    H2 = construct_graph(data2, dist)
+    
+    return cuts, H1, H2, data1, data2
     
 def contract(G, main_node, neighbour):
     for edge in G.edges(neighbour):
@@ -83,14 +87,15 @@ def contract(G, main_node, neighbour):
     
     return G
 
-def adaptedHCS(G):
+def adapted_hcs(data: dict, G, cuts: list, dist = 0):
+    ###### hcs criterion must be adjusted ########
     if not(G.number_of_edges() > 0.5*G.number_of_nodes()) or (G.number_of_nodes() == 1):
-        C, (H1, H2) = nx.minimum_cut(G, )
+        C, H1, H2, data1, data2 = karger_min_cut(data, G, cuts, dist)
         
-        p1 = adaptedHCS(H1)
-        p2 = adaptedHCS(H2)
+        p1 = adapted_hcs(data1, H1, C, dist)
+        p2 = adapted_hcs(data2, H2, C, dist)
         
         G = nx.Graph()
         G.add_edge(p1, p2)
-    
+        print('hi')
     return G
