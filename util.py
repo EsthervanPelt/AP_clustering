@@ -32,13 +32,30 @@ def correlation(u: list, v: list, dist = 1):
         mean_v = mean(v)
         
         nom = sum(map(lambda x,y: (x-mean_u)*(y-mean_v), u, v))
-        den = sum(map(lambda x: (x-mean_u)**2))*sum(map(lambda y: (y-mean_v)**2))
+        den = (sum([(x-mean_u)**2 for x in u])*sum([(y-mean_v)**2 for y in v]))**(1/2)
         
         corr = nom/den 
         d_corr = 1 - abs(corr)
         
         if dist == 1: return d_corr
         elif dist == 0: return corr
+
+def half_correlation_matrix(data: dict, dist = 0): 
+    datapoints = list(data.keys())
+    corr_matrix = []
+    for i in range(len(datapoints)):
+        x = datapoints[i]
+        
+        row = []
+        
+        for j in range (i):
+            y = datapoints[j]
+            corr = correlation(data[x][2], data[y][2], dist)
+            row.append(corr)
+        
+        corr_matrix.append(row)
+    
+    return corr_matrix
 
 def mean_cluster_weight(x: int, data: dict, cluster: tuple, dist: 0): #0 = euclidean, 1 = squared euclidean
     cluster_points = cluster[1]
