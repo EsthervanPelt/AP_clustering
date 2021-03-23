@@ -9,13 +9,6 @@ import matplotlib.pyplot as plt
 import networkx as nx
 import random
 
-####### Read in data ###########
-from data import read_data
-fileMetadata = "GDSC_metadata.csv"
-fileRMAExpression = "GDSC_RNA_expression.csv"
-data, gene_names = read_data(fileMetadata, fileRMAExpression);
-################################
-
 def find_edge_threshold(data: dict, dist = 0):
     corr_matrix, datapoints = half_correlation_matrix(data,dist=0)
     
@@ -49,19 +42,13 @@ def construct_graph(data: dict, dist = 0):
     
     G = nx.MultiGraph()
     for key in data:
-        G.add_node(key, label = data[key][1], gene_values = data[key][2]) #0 = cancer label, 1 = gene values
-    
+        G.add_node(key, label = data[key][1], gene_values = data[key][2], contains = []) #0 = cancer label, 1 = gene values, 2 = list of contained nodes
+        
     for row in range(len(corr_matrix)):
         for column in range(len(corr_matrix[row])):
             if corr_matrix[row][column] >= cc: 
                 G.add_edge(datapoints[row], datapoints[column])
-            
-    # for i in list(G.nodes): 
-    #     if len(G.adj[i]) == 0:
-    #         row = datapoints.index(i)
-    #         column = corr_matrix[row].index(max(corr_matrix[row]))
-    #         G.add_edge(datapoints[row], datapoints[column])
-            
+                
     return G
  
 def karger_min_cut(G, cuts):
@@ -71,27 +58,28 @@ def karger_min_cut(G, cuts):
         i += 1
         node = random.choice(list(G.nodes))
         
-        # if len(G.adj[node]) == 0:
-        #     G.remove_node(node)
-        # else:            
         neighbour = random.choice(list(G.adj[node]))
         G = contract(G, node, neighbour)
         
-    mincut = len(G.adj[list(G.nodes)[0]])
-    cuts.append((mincut, )
+    mincut = len(G.edges(list(G.nodes())[0]))
     
-    return cuts, H1, H2
+    cuts.append(mincut)
+     
+    H1
+    
+    return cuts#, H1, H2
     
 def contract(G, main_node, neighbour):
+    for edge in G.edges(neighbour):
+        if main_node != edge[1]:
+            G.add_edge(main_node, edge[1])
     
-    for node in G.adj[neighbour]:  # merge the nodes from w to v
-        if node != main_node:  # we dont want to add self-loops
-            G.add_edge(main_node, node)
-
+    
+    if G.nodes[neighbour]['contains'] != 0:
+        G.nodes[main_node]['contains'] += G.nodes[neighbour]['contains']
+    G.nodes[main_node]['contains'] += [neighbour]
+    
     G.remove_node(neighbour)
-    
-    # for i in list(G.nodes):
-    #     if len(G.adj[i]) == 0: print(main_node, neighbour, i, 'warning')
     
     return G
 
