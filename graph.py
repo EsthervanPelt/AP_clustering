@@ -50,14 +50,31 @@ def construct_graph(data: dict, dist = 0):
                 G.add_edge(datapoints[row], datapoints[column])
                 
     return G
- 
+
+def singleton(G):
+    S = nx.Graph()
+    
+    to_remove = []
+    
+    for node in G.nodes():
+        if G.degree[node] == 0:
+            S.add_node(node)
+            to_remove.append(node)
+    
+    for node in to_remove:
+        G.remove_node(node)
+        
+    return G, S
+
 def karger_min_cut(data: dict, G, cuts, dist = 0):
     i = 0
     while G.number_of_nodes() > 2:
-        print(i)
-        i += 1
+        # print(i)
+        # i += 1
         node = random.choice(list(G.nodes))
-        
+        while len(G.adj[node])<2:
+            node = random.choice(list(G.nodes))
+            # print(node)
         neighbour = random.choice(list(G.adj[node]))
         G = contract(G, node, neighbour)
         
@@ -75,26 +92,35 @@ def karger_min_cut(data: dict, G, cuts, dist = 0):
     
 def contract(G, main_node, neighbour):
     for edge in G.edges(neighbour):
-        if main_node != edge[1]:
-            G.add_edge(main_node, edge[1])
-    
+        if edge[0] == neighbour:
+            if main_node != edge[1]:
+                G.add_edge(main_node, edge[1])
+        elif edge[1] == neighbour:
+            if main_node != edge[0]:
+                G.add_edge(main_node, edge[0])
     
     if G.nodes[neighbour]['contains'] != 0:
         G.nodes[main_node]['contains'] += G.nodes[neighbour]['contains']
     G.nodes[main_node]['contains'] += [neighbour]
     
-    G.remove_node(neighbour)
+    # print(main_node, neighbour)
+    for i in list(G.nodes):
+        if len(G.adj[i]) == 0: print(main_node, neighbour, i, 'warning', len(G.edges(neighbour)))
+    # print(len(G.adj[main_node]), len(G.adj[neighbour]))
     
+    G.remove_node(neighbour)
     return G
 
 def adapted_hcs(data: dict, G, cuts: list, dist = 0):
-    ###### hcs criterion must be adjusted ########
-    if not(G.number_of_edges() > 0.5*G.number_of_nodes()) or (G.number_of_nodes() == 1):
+    for node in G.nodes():
+        if G.degree[node] < 0.5*G.number_of_nodes(): highly_connected = False; break
+    
+    if not(highly_connected) and G.number_of_nodes() != 1:
         C, H1, H2, data1, data2 = karger_min_cut(data, G, cuts, dist)
-        
+    
         p1 = adapted_hcs(data1, H1, C, dist)
         p2 = adapted_hcs(data2, H2, C, dist)
-        
+                
         G = nx.Graph()
         G.add_edge(p1, p2)
         print('hi')
