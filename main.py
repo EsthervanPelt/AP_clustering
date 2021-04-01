@@ -11,7 +11,8 @@ from graph import construct_graph
 from graph import adapted_hcs
 from graph import singleton
 from graph import connectedComponents
-
+import networkx as nx
+import matplotlib.pyplot as plt
 # assign datafiles
 fileMetadata = "GDSC_metadata.csv"
 fileRMAExpression = "GDSC_RNA_expression.csv"
@@ -27,14 +28,27 @@ data, gene_names = read_data(fileMetadata, fileRMAExpression);
 
 # construct graph with approximately 0.1*n(n-1)/2 edges
 dist = 0
-G = construct_graph(data, dist)
+G, threshold = construct_graph(data, None, dist)
 
 # make singleton set
 G,S = singleton(G)
 # retrieve sets of connected nodes
-cc = connectedComponents(G)
+cc = connectedComponents(G) #you can also use nx.connected_components()
 
 # HCS algorithm
 cuts = []
-for subG in cc:
-    subG = adapted_hcs(data, subG, cuts, dist)
+subG0 = cc[0]
+plt.figure()
+nx.draw(subG0)
+subG1 = cc[1]
+plt.figure()
+nx.draw(subG1)
+subG2 = cc[2]
+plt.figure()
+nx.draw(subG2)
+subG, cuts = adapted_hcs(data, subG0, cuts, threshold, dist)
+i = 0
+# for subG in cc:
+#     i+=1
+#     print(i)
+#     subG, cuts = adapted_hcs(data, subG, cuts, dist)
