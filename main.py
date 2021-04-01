@@ -10,6 +10,7 @@ from kmeans import clustering
 from graph import construct_graph
 from graph import adapted_hcs
 from graph import singleton
+from graph import connectedComponents
 
 # assign datafiles
 fileMetadata = "GDSC_metadata.csv"
@@ -30,7 +31,10 @@ G = construct_graph(data, dist)
 
 # make singleton set
 G,S = singleton(G)
-        
+# retrieve sets of connected nodes
+cc = connectedComponents(G)
+
 # HCS algorithm
 cuts = []
-G = adapted_hcs(data, G, cuts, dist)
+for subG in cc:
+    subG = adapted_hcs(data, subG, cuts, dist)
