@@ -67,7 +67,7 @@ def singleton(G):
     return G, S
 
 def karger_min_cut(data: dict, G, cuts, dist = 0):
-    i = 0
+    # i = 0
     while G.number_of_nodes() > 2:
         # print(i)
         # i += 1
@@ -110,6 +110,42 @@ def contract(G, main_node, neighbour):
     
     G.remove_node(neighbour)
     return G
+
+def DFSUtil(G, temp, v, visited, nodes):
+    node = nodes[v]
+    
+    # Mark the current vertex as visited
+    visited[v] = True
+ 
+    # Store the vertex to list
+
+    attribute = G.nodes[node]
+    temp.add_node(node, label = attribute['label'], gene_values = attribute['gene_values'], contains = attribute['contains'])
+ 
+    # Repeat for all vertices adjacent to this vertex v
+    
+    for i in G.adj[node]:
+        temp.add_edge(node, i)
+        if visited[nodes.index(i)] == False:
+
+            # Update the list
+            temp = DFSUtil(G, temp, nodes.index(i), visited, nodes)
+    return temp
+ 
+# Method to retrieve connected components in an undirected graph
+def connectedComponents(G):
+    visited = []
+    cc = []
+    for i in range(len(G.nodes)):
+        visited.append(False)
+        
+    nodes = list(G.nodes)
+    for v in range(len(nodes)):
+
+        if visited[v] == False:
+            temp =nx.Graph()
+            cc.append(DFSUtil(G, temp, v, visited, nodes))
+    return cc
 
 def adapted_hcs(data: dict, G, cuts: list, dist = 0):
     for node in G.nodes():
