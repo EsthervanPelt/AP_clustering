@@ -13,6 +13,7 @@ from graph import singleton
 from graph import connectedComponents
 import networkx as nx
 import matplotlib.pyplot as plt
+
 # assign datafiles
 fileMetadata = "GDSC_metadata.csv"
 fileRMAExpression = "GDSC_RNA_expression.csv"
@@ -27,8 +28,8 @@ data, gene_names = read_data(fileMetadata, fileRMAExpression);
 # data, clusters, S = clustering(data, k, max_iterations, dist)
 
 # construct graph with approximately 0.1*n(n-1)/2 edges
-dist = 0
-G, threshold = construct_graph(data, None, dist)
+dist = 0; perc = 0.1
+G, threshold = construct_graph(data, None, perc, dist)
 
 # make singleton set
 G,S = singleton(G)
@@ -36,19 +37,13 @@ G,S = singleton(G)
 cc = connectedComponents(G) #you can also use nx.connected_components()
 
 # HCS algorithm
-cuts = []
-subG0 = cc[0]
-plt.figure()
-nx.draw(subG0)
-subG1 = cc[1]
-plt.figure()
-nx.draw(subG1)
-subG2 = cc[2]
-plt.figure()
-nx.draw(subG2)
-subG, cuts = adapted_hcs(data, subG0, cuts, threshold, dist)
-i = 0
-# for subG in cc:
-#     i+=1
-#     print(i)
-#     subG, cuts = adapted_hcs(data, subG, cuts, dist)
+mincut_trials = 10
+subgraphs = []
+singles = []
+
+for i in range(len(cc)):
+    print("Connected component", i)
+    G = cc[i]; subgraphs = []; singles = [] 
+    print(" # nodes before:", G.number_of_nodes())
+    subgraphs, singles = adapted_hcs(data, G, subgraphs, singles, threshold, mincut_trials, dist)
+    print(" # nodes after:", G.number_of_nodes(), "\n # subgraphs:", len(subgraphs), "\n # singles:", len(singles), "\n")

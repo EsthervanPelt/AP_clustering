@@ -7,6 +7,26 @@ Created on Mon Mar 22 10:14:03 2021
 import pandas as pd
 
 def read_data(metadata: str, expression: str):
+    """
+    Function that reads in the gene expression values and metadata files (which are in csv format).
+    The information is stored in a dictionary that contains the cell line indices, with the corresponding names, cancer types and gene expression values. 
+    The cluster ID is not yet assigned, so this value contains Nones as a placeholder.
+
+    Parameters
+    ----------
+    metadata : str
+        filename of the csv-file containing metadata
+    expression : str
+        filename of the csv-file containing gene expression values
+
+    Returns
+    -------
+    data : dict
+        matrix containing key-value pairs as specified above
+    gene_names : list
+        list of gene names, with indices corresponding to the set of gene expression values. 
+
+    """
     meta = pd.read_csv(metadata)
     genes = pd.read_csv(expression)
     
