@@ -39,8 +39,8 @@ def initial_clustering(k: int, data: dict):
 
 def compute_centroid(data: dict, clusters: dict):
     """
-    Function that computes the cluster centroid for each of the clusters. It uses the list of data points contained in the clusters dictionairy,
-    combined with the values of those data points that are contained within the data dictionairy. 
+    Function that computes the cluster centroid for each of the clusters. It uses the list of data points contained in the clusters dictionary,
+    combined with the values of those data points that are contained within the data dictionary. 
 
     Parameters
     ----------
