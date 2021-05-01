@@ -33,7 +33,7 @@ def initial_clustering(k: int, data: dict):
         # choose a random data point 
         random_point = rd.choice(list(data.keys()))
         # use this chosen data point as initial centroid
-        clusters[cluster_ID] = [data[random_point][2], []] #0 = centroid location, 1 = list of data points
+        clusters[cluster_ID] = [data[random_point][2], [], {}] #0 = centroid location, 1 = list of data points, 2 = stats (data types)
         
     return clusters
 
@@ -181,7 +181,7 @@ def clustering(data: dict, k: int, max_iterations: int, dist = 0):
         if S[-1] == S[-2]: break
     
     # print final Silhouette score
-    silh = S[-1]; print('Silhouette coefficient:', silh, '\n')
+    silh = S[-1]; #print('Silhouette coefficient:', silh, '\n')
     
     # keep count of data types
     for key in clusters:
@@ -197,11 +197,9 @@ def clustering(data: dict, k: int, max_iterations: int, dist = 0):
             if data[datapoint][1] == 'KIRC': KIRC += 1
             if data[datapoint][1] == 'COAD/READ': COAD_READ += 1
         
-        # print stats
-        print('Cluster', key, '\n', 
-              'NB:       ', NB, '\n', 
-              'BRCA:     ', BRCA, '\n',
-              'KIRC:     ', KIRC, '\n',
-              'COAD/READ:', COAD_READ)
-    
+        # store stats in clusters dictionary:
+        stats = {}
+        stats['NB'] = NB; stats['BRCA'] = BRCA; stats['KIRC'] = KIRC; stats['COAD/READ'] = COAD_READ        
+        clusters[key][2] = stats
+        
     return data, clusters, silh
