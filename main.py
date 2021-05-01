@@ -11,8 +11,6 @@ from graph import construct_graph
 from graph import adapted_hcs
 from graph import singleton
 from graph import connectedComponents
-import networkx as nx
-import matplotlib.pyplot as plt
 
 # assign datafiles
 fileMetadata = "GDSC_metadata.csv"
@@ -22,10 +20,10 @@ fileRMAExpression = "GDSC_RNA_expression.csv"
 data, gene_names = read_data(fileMetadata, fileRMAExpression);
 
 # k-means algorithm
-# k = 4
-# max_iterations = 20
-# dist = 0 # euclidean
-# data, clusters, S = clustering(data, k, max_iterations, dist)
+k = 4
+max_iterations = 20
+dist = 0 # euclidean distance
+data, clusters, S = clustering(data, k, max_iterations, dist)
 
 # construct graph with approximately 0.1*n(n-1)/2 edges
 dist = 0; perc = 0.1
@@ -38,8 +36,7 @@ cc = connectedComponents(G) #you can also use nx.connected_components()
 
 # HCS algorithm
 mincut_trials = 10
-subgraphs = []
-singles = []
+subgraphs = []; singles = []
 
 for i in range(len(cc)):
     print("Connected component", i)
@@ -47,3 +44,4 @@ for i in range(len(cc)):
     print(" # nodes before:", G.number_of_nodes())
     subgraphs, singles = adapted_hcs(data, G, subgraphs, singles, threshold, mincut_trials, dist)
     print(" # nodes after:", G.number_of_nodes(), "\n # subgraphs:", len(subgraphs), "\n # singles:", len(singles), "\n")
+ 

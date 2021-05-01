@@ -22,30 +22,32 @@ def read_data(metadata: str, expression: str):
     Returns
     -------
     data : dict
-        matrix containing key-value pairs as specified above
+        contains key-value pairs as specified above
     gene_names : list
         list of gene names, with indices corresponding to the set of gene expression values. 
 
     """
+    # read in the data from the given files
     meta = pd.read_csv(metadata)
     genes = pd.read_csv(expression)
     
+    # create empty data dictionary
     data = {}
     
+    # fill the dictionary with information from the pandas matrices
     for index in meta.index:
         data[meta['COSMIC_ID'][index]] = [meta['name'][index],          # name of cel line
                                           meta['TCGA_label'][index],    # type of cancer
                                           genes.loc[genes['Unnamed: 0'] == meta['name'][index]].values[0,1:].tolist(), # gene expression values 
                                           None]                         # cluster ID
     
+    # create a list containing the gene names
     gene_names = genes.columns.values[1:].tolist()
+    
     return data, gene_names
  
 # fileMetadata = "GDSC_metadata.csv"
 # fileRMAExpression = "GDSC_RNA_expression.csv"
-
-# meta = pd.read_csv(fileMetadata)
-# values = pd.read_csv(fileRMAExpression)
 
 # data, gene_names = read_data(fileMetadata, fileRMAExpression)
 
