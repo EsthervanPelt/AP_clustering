@@ -35,18 +35,17 @@ for k in range(2,10):
         if new_S > S:
             data = new_data; clusters = new_clusters; S = new_S
     
-    outf_1.write('Number of clusters: '+str(k)+' \t '+'Silhoette coefficient: '+str(S))
-    outf_1.write(' Division of data types per cluster:')
+    outf_1.write('Number of clusters: '+str(k)+' \t '+'Silhoette coefficient: '+str(S)+'\n')
+    outf_1.write(' Division of data types per cluster:'+'\n')
     for key in clusters:
         outf_1.write('  Cluster '+str(key)+'\n'+ 
               '  NB:        '+str(clusters[key][2]['NB'])+'\n'+ 
               '  BRCA:      '+str(clusters[key][2]['BRCA'])+'\n'+
               '  KIRC:      '+str(clusters[key][2]['KIRC'])+'\n'+
-              '  COAD/READ: '+str(clusters[key][2]['COAD/READ']))
+              '  COAD/READ: '+str(clusters[key][2]['COAD/READ'])+'\n')
 
 outf_1.close()
 
-print('hji')
 ##############################################################################
 ################### test hcs algorithm #######################################
 
@@ -108,6 +107,6 @@ for kmeans in kmeans_trials:
         
         if cluster_type != data[test][1]: error_score += 1; 
 
-    outf_2.write('Number of k nearest neighbours: '+str(kmeans)+'\t'+'Error score: '+str(error_score))
+    outf_2.write('Number of k nearest neighbours: '+str(kmeans)+'\t'+'Error score: '+str(error_score)+'\n')
 outf_2.close()
 # leave-one-out algorithm for hcs
